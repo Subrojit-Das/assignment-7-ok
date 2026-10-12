@@ -35,7 +35,7 @@ const OneProductsPage = async ({ searchParams }) => {
 
   return (
     <div className="bg-[#f4f6f3] p-4 sm:p-8 text-gray-800">
-      <div className="max-w-6xl mx-auto space-y-6">
+      <div className="container mx-auto space-y-6">
         
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center gap-4">
           <div className="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center text-3xl shadow-inner">
