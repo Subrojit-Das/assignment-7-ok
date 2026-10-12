@@ -4,6 +4,7 @@ const nextConfig = {
   experimental: {
     agentFeedback: true,
   },
+  images : {remotePatterns:[{protocol:"https",hostname:"lh3.googleusercontent.com"}]},
   // cacheComponents: true,
   // partialPrefetching: true,
   turbopack: {

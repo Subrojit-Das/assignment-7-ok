@@ -1,9 +1,15 @@
 "use client";
 
-import { toast } from "react-toastify";
 import React, { useState } from "react";
-import {Button, FieldError, Form, Input, Label, TextField,} from "@heroui/react";
-
+import { toast } from "react-toastify";
+import {
+  Button,
+  FieldError,
+  Form,
+  Input,
+  Label,
+  TextField,
+} from "@heroui/react";
 import { signIn } from "../../../lib/auth-client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -22,8 +28,8 @@ const SignIn = () => {
       setLoading(true);
 
       const { error } = await signIn.email({
-        email: data.email,
-        password: data.password,
+        email: String(data.email),
+        password: String(data.password),
         rememberMe: true,
       });
 
@@ -32,7 +38,7 @@ const SignIn = () => {
         return;
       }
 
-      toast.success("Sign In Successful!");
+      toast.success("সফলভাবে সাইন ইন হয়েছে!");
 
       setTimeout(() => {
         router.push("/");
@@ -44,12 +50,42 @@ const SignIn = () => {
     }
   };
 
+  const hendelgooglesignin = async () => {
+    try {
+      const { error } = await signIn.social({
+        provider: "google",
+        callbackURL: "/",
+      });
+
+      if (error) {
+        toast.error(error.message || "Google Sign In Failed!");
+      }
+    } catch (error) {
+      toast.error(error.message || "Google Sign In Failed!");
+    }
+  };
+
+  const hendelgithubsignin = async () => {
+    try {
+      const { error } = await signIn.social({
+        provider: "github",
+        callbackURL: "/",
+      });
+
+      if (error) {
+        toast.error(error.message || "GitHub Sign In Failed!");
+      }
+    } catch (error) {
+      toast.error(error.message || "GitHub Sign In Failed!");
+    }
+  };
+
   return (
-    <div className="bg-[#f4f6f3] flex flex-col justify-center items-center px-4 py-8 text-gray-800">
-      <div className="w-full max-w-md space-y-6">
+    <div className="min-h-screen bg-[#f4f6f3] flex flex-col items-center justify-center px-4 py-8 text-gray-800">
+      <div className="w-full max-w-md space-y-5">
         <div className="text-center space-y-1">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-            সাইন ইন
+            সাইন ইন করুন
           </h1>
 
           <p className="text-sm text-gray-600">
@@ -57,8 +93,8 @@ const SignIn = () => {
           </p>
         </div>
 
-        <div className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200/80 shadow-sm space-y-6">
-          <Form className="flex flex-col gap-4" onSubmit={onSubmit}>
+        <div className="bg-[#fbfcfb] p-5 sm:p-7 rounded-2xl border border-gray-200 shadow-sm">
+          <Form className="flex flex-col gap-3" onSubmit={onSubmit}>
             <TextField
               isRequired
               name="email"
@@ -67,61 +103,106 @@ const SignIn = () => {
                 if (
                   !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value)
                 ) {
-                  return "Please enter a valid email address";
+                  return "সঠিক ইমেইল ঠিকানা লিখুন";
                 }
                 return null;
               }}
             >
-              <Label className="text-sm font-semibold text-gray-700">
+              <Label className="text-xs font-semibold text-gray-700">
                 ইমেইল
               </Label>
-              <Input placeholder="you@example.com" className="mt-1" />
+
+              <Input
+                name="email"
+                type="email"
+                placeholder="you@example.com"
+                className="mt-1 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-[#0f8a42]"
+              />
+
               <FieldError />
             </TextField>
 
             <TextField
               isRequired
-              minLength={8}
               name="password"
               type="password"
               validate={(value) => {
                 if (value.length < 8) {
-                  return "Password must be at least 8 characters";
+                  return "পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে";
                 }
                 return null;
               }}
             >
-              <Label className="text-sm font-semibold text-gray-700">
+              <Label className="text-xs font-semibold text-gray-700">
                 পাসওয়ার্ড
               </Label>
-              <Input placeholder="কমপক্ষে ৮ অক্ষর" className="mt-1" />
+
+              <Input
+                name="password"
+                type="password"
+                placeholder="কমপক্ষে ৮ অক্ষর"
+                className="mt-1 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-[#0f8a42]"
+              />
+
               <FieldError />
             </TextField>
 
             <Button
               type="submit"
               isDisabled={loading}
-              className="w-full py-3 mt-2 bg-[#0f8a42] hover:bg-[#0c7337] text-white font-semibold rounded-xl shadow-sm transition-all"
+              className="mt-1 w-full rounded-md bg-[#078a42] py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#067536]"
             >
               {loading ? "সাইন ইন হচ্ছে..." : "সাইন ইন"}
             </Button>
           </Form>
 
-          <div className="text-center pt-2 text-xs text-gray-600">
+          <div className="pt-3 text-center text-xs text-gray-600">
             অ্যাকাউন্ট নেই?{" "}
             <Link
               href="/sign-up"
-              className="font-semibold text-[#0f8a42] hover:underline"
+              className="font-semibold text-[#078a42] hover:underline"
             >
               সাইন আপ করুন
             </Link>
+          </div>
+
+          <div className="my-3 flex items-center gap-3">
+            <div className="h-px flex-1 bg-gray-200" />
+            <span className="text-xs text-gray-500">অথবা</span>
+            <div className="h-px flex-1 bg-gray-200" />
+          </div>
+
+          <div className="grid grid-cols-2 gap-2">
+            <Button
+              type="button"
+              onClick={hendelgooglesignin}
+              className="flex w-full items-center justify-center gap-1 rounded-md border border-gray-200 bg-white px-2 py-2.5 text-xs font-semibold text-gray-700 hover:bg-gray-50"
+            >
+              <span className="font-bold text-[#4285F4]">G</span>
+              Google দিয়ে সাইন ইন
+            </Button>
+
+            <Button
+              type="button"
+              onClick={hendelgithubsignin}
+              className="flex w-full items-center justify-center gap-1 rounded-md border border-gray-200 bg-white px-2 py-2.5 text-xs font-semibold text-gray-700 hover:bg-gray-50"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                className="h-4 w-4 shrink-0 fill-current"
+                aria-hidden="true"
+              >
+                <path d="M12 .9a11.1 11.1 0 0 0-3.51 21.63c.55.1.76-.24.76-.54v-2.1c-3.1.67-3.75-1.32-3.75-1.32-.5-1.28-1.24-1.62-1.24-1.62-1.01-.69.08-.68.08-.68 1.12.08 1.71 1.15 1.71 1.15.99 1.7 2.6 1.21 3.23.92.1-.72.39-1.21.7-1.49-2.47-.28-5.06-1.24-5.06-5.5 0-1.22.44-2.21 1.15-2.99-.12-.28-.5-1.42.11-2.95 0 0 .94-.3 3.05 1.14a10.6 10.6 0 0 1 5.55 0c2.11-1.44 3.05-1.14 3.05-1.14.61 1.53.23 2.67.11 2.95.72.78 1.15 1.77 1.15 2.99 0 4.27-2.59 5.22-5.07 5.49.4.35.75 1.02.75 2.06v3.09c0 .3.2.65.76.54A11.1 11.1 0 0 0 12 .9Z" />
+              </svg>
+              GitHub দিয়ে সাইন ইন
+            </Button>
           </div>
         </div>
 
         <div className="text-center">
           <Link
             href="/"
-            className="text-xs text-gray-500 hover:text-gray-700 transition-colors"
+            className="text-xs text-gray-500 transition-colors hover:text-gray-700"
           >
             ← হোম পেজে ফিরে যান
           </Link>
